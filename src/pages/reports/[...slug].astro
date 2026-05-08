@@ -1,0 +1,35 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const reports = await getCollection('reports');
+  return reports.map((report) => ({
+    params: { slug: report.id },
+    props: { report },
+  }));
+}
+
+const { report } = Astro.props;
+const { Content } = await render(report);
+---
+
+<Layout title={`Report — ${report.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`}>
+  <article>
+    <div class="meta">
+      {report.data.date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })}
+      <span class="badge badge-{report.data.mode || 'quick'}">{(report.data.mode || 'quick').toUpperCase()}</span>
+      {report.data.sentiment && (
+        <span class="sentiment sent-{report.data.sentiment.toLowerCase().includes('bull') ? 'bullish' : report.data.sentiment.toLowerCase().includes('bear') ? 'bearish' : report.data.sentiment.toLowerCase().includes('cautious') ? 'cautious' : 'neutral'}">
+          {report.data.sentiment}
+        </span>
+      )}
+    </div>
+    <Content />
+  </article>
+</Layout>

@@ -1,0 +1,6 @@
+# Stonks Bot — Static Site
+node_modules/
+dist/
+.astro/
+.DS_Store
+*.log

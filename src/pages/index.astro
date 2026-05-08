@@ -1,0 +1,64 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const reports = await getCollection('reports', ({ data }) => {
+  return true; // include all
+});
+
+// Sort by date descending
+reports.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const sentimentClass = (s: string | undefined) => {
+  if (!s) return '';
+  const lower = s.toLowerCase();
+  if (lower.includes('bull')) return 'sent-bullish';
+  if (lower.includes('bear')) return 'sent-bearish';
+  if (lower.includes('cautious')) return 'sent-cautious';
+  return 'sent-neutral';
+};
+---
+
+<Layout title="Stonks Bot">
+  <p style="margin-bottom:1.5rem;color:var(--text-muted);">
+    Daily market reports generated from Reddit sentiment, news, and technical analysis.
+    <strong>{reports.length}</strong> report{reports.length !== 1 ? 's' : ''} available.
+  </p>
+
+  {
+    reports.length === 0 ? (
+      <article>
+        <p style="text-align:center;color:var(--text-muted);padding:2rem;">
+          No reports yet. The first report will appear after the morning collection runs.
+        </p>
+      </article>
+    ) : (
+      <ul class="report-list">
+        {reports.map((report) => {
+          const mode = report.data.mode || 'quick';
+          const sentiment = report.data.sentiment || 'Unknown';
+          return (
+            <li>
+              <a href={`/reports/${report.id}`}>
+                📈 {report.data.date.toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </a>
+              <span class={`badge badge-${mode}`}>{mode.toUpperCase()}</span>
+              <span class={`sentiment ${sentimentClass(sentiment)}`}>{sentiment}</span>
+              {report.data.tickers && report.data.tickers.length > 0 && (
+                <div class="date">
+                  Tickers: {report.data.tickers.slice(0, 8).map(t => `$${t}`).join(', ')}
+                  {report.data.tickers.length > 8 ? ` +${report.data.tickers.length - 8} more` : ''}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    )
+  }
+</Layout>

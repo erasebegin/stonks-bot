@@ -1,0 +1,242 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} — Stonks Bot</title>
+    <meta name="description" content={description || 'Daily market opportunity scanner'} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style is:global>
+      :root {
+        --bg: #0d1117;
+        --bg-card: #161b22;
+        --bg-elevated: #21262d;
+        --border: #30363d;
+        --text: #c9d1d9;
+        --text-muted: #8b949e;
+        --accent: #58a6ff;
+        --green: #3fb950;
+        --red: #f85149;
+        --yellow: #d2991d;
+        --orange: #db6d28;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+      }
+
+      header {
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      header h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+      }
+
+      header h1 a {
+        color: var(--text);
+        text-decoration: none;
+      }
+
+      header h1 a:hover { color: var(--accent); }
+
+      header p {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+      }
+
+      article {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      article h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+      article h2 {
+        font-size: 1.2rem;
+        margin: 2rem 0 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      article h3 { font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+      article p { margin-bottom: 0.75rem; color: var(--text); }
+      article strong { color: #f0f6fc; }
+      article a { color: var(--accent); text-decoration: none; }
+      article a:hover { text-decoration: underline; }
+
+      article code {
+        background: var(--bg-elevated);
+        padding: 0.15em 0.4em;
+        border-radius: 3px;
+        font-size: 0.9em;
+      }
+
+      article pre {
+        background: var(--bg-elevated);
+        padding: 1rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin: 1rem 0;
+      }
+
+      article pre code {
+        background: none;
+        padding: 0;
+      }
+
+      article table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+      }
+
+      article th, article td {
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      article th {
+        font-weight: 600;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+      }
+
+      article blockquote {
+        border-left: 3px solid var(--accent);
+        padding-left: 1rem;
+        margin: 1rem 0;
+        color: var(--text-muted);
+      }
+
+      article hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 2rem 0;
+      }
+
+      article ul, article ol {
+        padding-left: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      article li { margin-bottom: 0.4rem; }
+
+      .meta {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .report-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .report-list li {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 0.75rem;
+        transition: border-color 0.2s;
+      }
+
+      .report-list li:hover {
+        border-color: var(--accent);
+      }
+
+      .report-list a {
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      .report-list a:hover { text-decoration: underline; }
+
+      .report-list .date {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+      }
+
+      .report-list .sentiment {
+        display: inline-block;
+        padding: 0.15em 0.5em;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        margin-left: 0.5rem;
+      }
+
+      .sent-bullish { background: rgba(63,185,80,0.15); color: var(--green); }
+      .sent-bearish { background: rgba(248,81,73,0.15); color: var(--red); }
+      .sent-neutral { background: rgba(139,148,158,0.15); color: var(--text-muted); }
+      .sent-cautious { background: rgba(210,153,29,0.15); color: var(--yellow); }
+
+      .badge {
+        display: inline-block;
+        padding: 0.1em 0.45em;
+        border-radius: 3px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+      }
+
+      .badge-quick { background: rgba(139,148,158,0.2); color: var(--text-muted); }
+      .badge-full { background: rgba(63,185,80,0.15); color: var(--green); }
+
+      footer {
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+
+      @media (max-width: 600px) {
+        body { padding: 1rem; }
+        article { padding: 1.25rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1><a href="/">📊 Stonks Bot</a></h1>
+      <p>Daily market opportunity scanner — {description || 'Reddit sentiment + news + technicals'}</p>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <p>Stonks Bot — Automated daily market reports. Not financial advice. Built with Astro.</p>
+    </footer>
+  </body>
+</html>
