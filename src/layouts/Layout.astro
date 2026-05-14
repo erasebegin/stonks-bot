@@ -109,7 +109,11 @@ const base = import.meta.env.BASE_URL;
       }
 
       article table {
-        width: 100%;
+        display: block;
+        max-width: 100%;
+        width: fit-content;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         border-collapse: collapse;
         margin: 1rem 0;
       }
